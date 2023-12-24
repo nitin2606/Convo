@@ -1,4 +1,5 @@
 Flask
 SpeechRecognition
 Flask-SocketIO
+imageio
 Gunicorn
