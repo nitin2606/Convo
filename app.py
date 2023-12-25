@@ -58,8 +58,8 @@ def recognize_and_emit(shared_data):
                     
                     #shared_data.pause_event.wait()
                     print("Listening ....")
-                    #audio_data = recognizer.record(source, duration = 3.5)
-                    audio_data = recognizer.listen(source, timeout=5)
+                    audio_data = recognizer.record(source, duration = 3.5)
+                    #audio_data = recognizer.listen(source, timeout=5)
                     print("Recognizing your text .........")
                     text = recognizer.recognize_google(audio_data)
 
