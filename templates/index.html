@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONVO</title>
+
+    
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: rgb(11, 22, 53);
+            
+        }
+
+        #videoPlayer {
+            display: block;
+            margin: auto;
+        }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+</head>
+
+<body>
+   
+    <h1>CONVO</h1>
+    <video id="videoPlayer" width="800" height="800" autoplay="true" controls></video>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // Sample video URL for continuous loop
+        var sampleVideoUrl = "{{ url_for('static', filename='friendly_new.mp4') }}";
+
+        // Flag to indicate whether to play the sample video
+        var playSampleVideo = true;
+
+        startListening();
+
+        playVideo(sampleVideoUrl, true);
+
+        
+        function startListening() {
+            socket.emit('start_listening', {});
+        }
+
+        // Play the sample video in a loop when the page loads
+        playVideo(sampleVideoUrl, true);
+
+        socket.on('text_received', function(data) {
+            //var outputTextarea = document.getElementById('output');
+            //outputTextarea.value = 'Text: ' + data.text + '\nIntent: ' + data.intent;
+
+            // Stop playing the sample video
+            playSampleVideo = false;
+
+            // Play the answer video
+            playVideo(data.video_url, false, function() {
+                
+                playSampleVideo = true;
+                playVideo(sampleVideoUrl, true);
+            });
+        });
+
+        function playVideo(videoUrl, loop, onEndedCallback) {
+            var videoPlayer = document.getElementById('videoPlayer');
+
+            //videoPlayer.controls = false;
+            videoPlayer.src = videoUrl;
+            videoPlayer.loop = loop;
+            
+
+            videoPlayer.play();
+
+            if (onEndedCallback) {
+                videoPlayer.onended = onEndedCallback;
+            }
+
+            videoPlayer.play();
+        }
+    </script>
+</body>
+</html>
